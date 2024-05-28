@@ -50,12 +50,12 @@ class SpringRestClientHttpClientTest {
     void test200(){
         String body ="{ 'message': 'bliblablu' }";
         setupServer(200, "All Good", body);
-        dev.langchain4j.http.HttpResponse response = hitTheServerWithPostRequest();
+        dev.langchain4j.http.HttpResponse response = hitTheServerWithPostRequest(body);
         assertEquals(response.body(), body);
     }
 
 
-    private dev.langchain4j.http.HttpResponse hitTheServerWithPostRequest() {
+    private dev.langchain4j.http.HttpResponse hitTheServerWithPostRequest(String body) {
         String url = "http://127.0.0.1:1080/hello";
         HttpClientBuilder builder = new SpringRestClientHttpClientBuilderFactory().create();
 
