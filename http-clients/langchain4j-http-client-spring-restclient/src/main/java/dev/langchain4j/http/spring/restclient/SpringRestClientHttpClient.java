@@ -1,6 +1,8 @@
 package dev.langchain4j.http.spring.restclient;
 
 import dev.langchain4j.http.*;
+import dev.langchain4j.http.spring.restclient.logging.RequestLoggingInterceptor;
+import dev.langchain4j.http.spring.restclient.logging.ResponseLoggingInterceptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
@@ -20,12 +22,19 @@ public class SpringRestClientHttpClient extends AbstractHttpClient {
     private final boolean logResponses;
 
     public SpringRestClientHttpClient(SpringRestClientHttpClientBuilder builder) {
+        this.logRequests = builder.logRequests();
+        this.logResponses = builder.logResponses();
+
         RestClient.Builder restClientBuilder = getOrDefault(builder.restClientBuilder(), RestClient::builder);
         // TODO timeouts!
         // TODO other params
+        if (logRequests) {
+            restClientBuilder.requestInterceptor(new RequestLoggingInterceptor());
+        }
+        if (logResponses){
+            restClientBuilder.requestInterceptor(new ResponseLoggingInterceptor());
+        }
         this.restClient = restClientBuilder.build();
-        this.logRequests = builder.logRequests();
-        this.logResponses = builder.logResponses();
     }
 
     @Override
